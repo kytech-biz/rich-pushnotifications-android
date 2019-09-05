@@ -1,15 +1,18 @@
-package biz.kytech.pushnotification;
+package biz.kytech.pushnotification.activity;
 
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
-import android.widget.Toast;
+import android.widget.TextView;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.firebase.iid.InstanceIdResult;
+
+import biz.kytech.pushnotification.R;
+import biz.kytech.pushnotification.service.MyFirebaseMessagingService;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -19,6 +22,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        final TextView tokenTextView = findViewById(R.id.token_value);
 
         FirebaseInstanceId.getInstance().getInstanceId()
                 .addOnCompleteListener(new OnCompleteListener<InstanceIdResult>() {
@@ -29,15 +33,11 @@ public class MainActivity extends AppCompatActivity {
                             return;
                         }
 
-                        // Get new Instance ID token
                         String token = task.getResult().getToken();
-
-                        // Log and toast
-                        //String msg = getString(R.string.msg_token_fmt, token);
-                        String msg = token;
-                        Log.d(TAG, msg);
-                        Toast.makeText(MainActivity.this, "", Toast.LENGTH_SHORT).show();
+                        tokenTextView.setText(token);
                     }
                 });
     }
+
+
 }
