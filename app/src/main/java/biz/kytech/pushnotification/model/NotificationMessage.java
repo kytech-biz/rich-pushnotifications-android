@@ -7,17 +7,20 @@ import org.json.JSONObject;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.Serializable;
 import java.net.URL;
 import java.util.Map;
 
 import javax.net.ssl.HttpsURLConnection;
 
-public class NotificationMessage {
+public class NotificationMessage implements Serializable {
+
+    private static final String TAG = NotificationMessage.class.getSimpleName();
 
     private String title;
     private String body;
     private Category category;
-    private Bitmap image;
+    private URL url;
 
     public enum Category {
         Default("default"),
@@ -40,14 +43,12 @@ public class NotificationMessage {
         title = data.get("title");
         body = data.get("body");
         category = Category.parse(data.get("category"));
-        image = null;
 
         if (category == Category.Image) {
             try {
                 String json = data.get("rich");
                 JSONObject rich = new JSONObject(json);
-                URL url = new URL(rich.getString("url"));
-                image = downloadBitmap(url);
+                url = new URL(rich.getString("url"));
             } catch (Exception e) {
                 e.printStackTrace();
                 category = Category.Default;
@@ -55,13 +56,18 @@ public class NotificationMessage {
         }
     }
 
-    private static Bitmap downloadBitmap(URL url) throws IOException {
-        HttpsURLConnection connection = (HttpsURLConnection) url.openConnection();
-        connection.setDoInput(true);
-        connection.connect();
-        InputStream input = connection.getInputStream();
-        Bitmap bitmap = BitmapFactory.decodeStream(input);
-        return bitmap;
+    public Bitmap loadBitmap() {
+        try {
+            HttpsURLConnection connection = (HttpsURLConnection) url.openConnection();
+            connection.setDoInput(true);
+            connection.connect();
+            InputStream input = connection.getInputStream();
+            Bitmap bitmap = BitmapFactory.decodeStream(input);
+            return bitmap;
+        } catch (IOException e) {
+            e.printStackTrace();
+            return null;
+        }
     }
 
     public String getTitle() {
@@ -76,7 +82,7 @@ public class NotificationMessage {
         return category;
     }
 
-    public Bitmap getImage() {
-        return image;
+    public URL getUrl() {
+        return url;
     }
 }

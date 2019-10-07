@@ -34,13 +34,14 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
     public void onNewToken(String token) {
         Log.d(TAG, "Refreshed token: " + token);
 
-        //sendTokenToServer(token);
+        // TODO:
+        // sendTokenToServer(token);
     }
 
     @Override
     public void onMessageReceived(RemoteMessage remoteMessage) {
         NotificationMessage notificationMessage = new NotificationMessage(remoteMessage.getData());
-        PendingIntent pendingIntent = getPendingIntent(this);
+        PendingIntent pendingIntent = getPendingIntent(this, notificationMessage);
 
         if (notificationMessage.getCategory() == NotificationMessage.Category.Image) {
             showRichNotification(this, pendingIntent, notificationMessage);
@@ -86,16 +87,18 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
         RemoteViews colappsedView = new RemoteViews(getPackageName(), R.layout.notification_collapsed);
         colappsedView.setTextViewText(R.id.title, notificationMessage.getTitle());
         colappsedView.setTextViewText(R.id.body, notificationMessage.getBody());
+        colappsedView.setImageViewBitmap(R.id.imageView, notificationMessage.loadBitmap());
 
         RemoteViews expandedView = new RemoteViews(getPackageName(), R.layout.notification_expanded);
         expandedView.setTextViewText(R.id.title, notificationMessage.getTitle());
         expandedView.setTextViewText(R.id.body, notificationMessage.getBody());
-        expandedView.setImageViewBitmap(R.id.imageView, notificationMessage.getImage());
+        expandedView.setImageViewBitmap(R.id.imageView, notificationMessage.loadBitmap());
         //expandedView.setOnClickPendingIntent(R.id.btn, pendingIntent);
 
         Notification notification = new NotificationCompat.Builder(context, NOTIFICATION_CHANNEL_ID)
                 .setContentIntent(pendingIntent)
-                .setSmallIcon(R.mipmap.ic_launcher_round)
+                .setSmallIcon(R.mipmap.ic_launcher)
+                .setColor(ContextCompat.getColor(context, R.color.colorPrimary))
                 .setAutoCancel(true)
                 .setCustomContentView(colappsedView)
                 .setCustomBigContentView(expandedView)
@@ -105,16 +108,17 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
         manager.notify(TAG,1, notification);
     }
 
-    private static PendingIntent getPendingIntent(Context context) {
+    private static PendingIntent getPendingIntent(Context context, NotificationMessage notificationMessage) {
         // Open intent is broadcast case.
-        Intent intentBroadcast = new Intent(context, NotificationReceiver.class);
-        PendingIntent pendingIntentBroadcast = PendingIntent.getBroadcast(context, 0, intentBroadcast, 0);
+        //Intent intentBroadcast = new Intent(context, NotificationReceiver.class);
+        //PendingIntent pendingIntentBroadcast = PendingIntent.getBroadcast(context, 0, intentBroadcast, 0);
 
         // Open intent is activity case.
         Intent intentActivity = new Intent(context, MainActivity.class);
+        intentActivity.putExtra("notificationMessage", notificationMessage);
         PendingIntent pendingIntentActivity = PendingIntent.getActivity(context, 0, intentActivity, 0);
 
-        return pendingIntentBroadcast;
+        return pendingIntentActivity;
     }
 
     private static NotificationManager getNotificationManager(Context context) {

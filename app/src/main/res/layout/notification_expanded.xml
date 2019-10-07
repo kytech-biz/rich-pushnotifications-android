@@ -1,29 +1,38 @@
-<?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="256dp"
-    android:orientation="vertical"
-    android:gravity="center">
+    android:orientation="vertical">
 
-    <TextView
-        android:id="@+id/title"
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        style="@style/TextAppearance.Compat.Notification.Title"
-        android:textColor="@color/colorPrimary"
-        android:text="[Title]" />
+        android:layout_height="226dp">
 
-    <TextView
-        android:id="@+id/body"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        style="@style/TextAppearance.Compat.Notification.Info"
-        android:text="[Message]" />
+        <TextView
+            android:id="@+id/body"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            style="@style/TextAppearance.Compat.Notification.Info"
+            android:text="[Message]" />
 
-    <ImageView
-        android:id="@+id/imageView"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_centerHorizontal="true" />
+        <TextView
+            android:id="@+id/title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_above="@id/body"
+            style="@style/TextAppearance.Compat.Notification.Title"
+            android:textColor="@color/colorPrimary"
+            android:text="[Title]" />
+
+        <ImageView
+            android:id="@+id/imageView"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_alignParentTop="true"
+            android:layout_above="@id/title"
+            android:layout_gravity="center" />
+
+    </RelativeLayout>
+
 
 </LinearLayout>

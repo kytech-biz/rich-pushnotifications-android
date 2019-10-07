@@ -8,6 +8,8 @@ import android.widget.Toast;
 
 public class NotificationReceiver extends BroadcastReceiver {
 
+    private static final String TAG = NotificationReceiver.class.getSimpleName();
+
     @Override
     public void onReceive(Context context, Intent intent) {
         Toast.makeText(context, "Clicked Push Notification", Toast.LENGTH_SHORT).show();

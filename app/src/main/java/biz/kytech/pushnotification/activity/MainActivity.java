@@ -12,11 +12,10 @@ import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.firebase.iid.InstanceIdResult;
 
 import biz.kytech.pushnotification.R;
-import biz.kytech.pushnotification.service.MyFirebaseMessagingService;
 
 public class MainActivity extends AppCompatActivity {
 
-    private static final String TAG = MyFirebaseMessagingService.class.getSimpleName();
+    private static final String TAG = MainActivity.class.getSimpleName();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,6 +37,4 @@ public class MainActivity extends AppCompatActivity {
                     }
                 });
     }
-
-
 }
